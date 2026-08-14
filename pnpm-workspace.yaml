@@ -1,5 +1,8 @@
 packages:
   - 'apps/*'
 allowBuilds:
-  esbuild: false
+  '@prisma/engines': true
+  bcrypt: false
+  esbuild: true
+  prisma: true
 onlyBuiltDependencies: esbuild
