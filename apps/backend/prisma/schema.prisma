@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+//  Enums 
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum IncomeType {
+  FIXED
+  VARIABLE
+  EXTRAORDINARY
+}
+
+enum TaxType {
+  ISR
+  IGSS
+}
+
+enum MovementType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+// User 
+
+model User {
+  id           Int      @id @default(autoincrement())
+  fullName     String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  incomeSources     IncomeSource[]
+  incomes           Income[]
+  expenseCategories ExpenseCategory[]
+  expenses          Expense[]
+  taxParameters     UserTaxParameter[]
+  emergencyFund     EmergencyFund?
+}
+
+// Income 
+
+model IncomeSource {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime @default(now())
+
+  incomes Income[]
+}
+
+model Income {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  user           User         @relation(fields: [userId], references: [id])
+  incomeSourceId Int
+  incomeSource   IncomeSource @relation(fields: [incomeSourceId], references: [id])
+  type           IncomeType
+  amount         Decimal      @db.Decimal(14, 2)
+  description    String?
+  date           DateTime
+  createdAt      DateTime     @default(now())
+}
+
+// Expenses 
+
+model ExpenseCategory {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime @default(now())
+
+  expenses Expense[]
+}
+
+model Expense {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id])
+  categoryId  Int
+  category    ExpenseCategory @relation(fields: [categoryId], references: [id])
+  amount      Decimal         @db.Decimal(14, 2)
+  description String?
+  date        DateTime
+  createdAt   DateTime        @default(now())
+}
+
+// Taxes 
+
+model TaxSetting {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  rate      Decimal  @db.Decimal(5, 4)
+  updatedAt DateTime @updatedAt
+}
+
+model UserTaxParameter {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  taxType   TaxType
+  rate      Decimal   @db.Decimal(5, 4)
+  validFrom DateTime
+  validTo   DateTime?
+  createdAt DateTime  @default(now())
+}
+
+// Emergency Fund 
+
+model EmergencyFund {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id])
+  balance   Decimal  @default(0) @db.Decimal(14, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  movements EmergencyFundMovement[]
+}
+
+model EmergencyFundMovement {
+  id              Int           @id @default(autoincrement())
+  emergencyFundId Int
+  emergencyFund   EmergencyFund @relation(fields: [emergencyFundId], references: [id])
+  type            MovementType
+  amount          Decimal       @db.Decimal(14, 2)
+  date            DateTime
+  description     String?
+  createdAt       DateTime      @default(now())
+}
