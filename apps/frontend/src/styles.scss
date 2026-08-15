@@ -19,3 +19,64 @@ app-dashboard .dashboard-nav a { border-color: rgba(255, 255, 255, .38) !importa
 app-dashboard .period-info { border-color: rgba(255, 255, 255, .55) !important; background: linear-gradient(115deg, #fff, #eaf6ff) !important; }
 app-dashboard .metric-card { border-color: rgba(255, 255, 255, .6) !important; background: linear-gradient(145deg, #fff, #e8f5ff) !important; box-shadow: 0 12px 26px rgba(3, 42, 85, .18) !important; }
 app-dashboard .metric-card:before { background: linear-gradient(90deg, #0e5eac, #65b5ec) !important; }
+
+/* Shared Finova visual language for the remaining views. */
+app-login, app-income, app-expenses, app-emergency-fund, app-reports, app-admin {
+  background: linear-gradient(135deg, #e8f5ff 0%, #f9fcff 46%, #d8edff 100%) !important;
+  color: #173b61;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+app-login .auth-card,
+app-income .panel,
+app-expenses .panel,
+app-emergency-fund .balance,
+app-emergency-fund .forms form,
+app-reports .filters,
+app-reports .panel,
+app-admin .panel {
+  border: 1px solid #d3e7f7 !important;
+  background: linear-gradient(145deg, #ffffff, #eff8ff) !important;
+  box-shadow: 0 10px 25px rgba(25, 91, 150, .08) !important;
+}
+
+app-login button,
+app-income button:not(.secondary):not(.link),
+app-expenses button:not(.secondary):not(.link),
+app-emergency-fund button,
+app-reports button:not(.secondary),
+app-admin button:not(.role-button) {
+  background: linear-gradient(120deg, #0d5f9f, #328dce) !important;
+  box-shadow: 0 5px 12px rgba(18, 89, 151, .16) !important;
+}
+
+app-login input,
+app-income input, app-income select, app-income textarea,
+app-expenses input, app-expenses select, app-expenses textarea,
+app-emergency-fund input,
+app-reports input {
+  border-color: #c9e0f2 !important;
+  background: #fff !important;
+}
+
+app-income .page-shell,
+app-expenses .page-shell,
+app-emergency-fund .page,
+app-reports .reports-shell,
+app-admin .admin-shell {
+  position: relative;
+}
+
+app-income h1, app-expenses h1, app-emergency-fund h1, app-reports h1, app-admin h1,
+app-login h1 { color: #133d69 !important; }
+
+app-income .eyebrow, app-expenses .eyebrow,
+app-reports .brand, app-admin header a, app-emergency-fund .back-link {
+  color: #1769ae !important;
+}
+
+app-income table th, app-expenses table th, app-emergency-fund table th, app-admin table th,
+app-income .section-heading, app-expenses .section-heading { color: #527694; }
+
+app-income .link, app-expenses .link, app-admin .role-button { color: #1769ae !important; }
+app-admin .badge.admin { background: #e0f1ff !important; color: #17609e !important; }
