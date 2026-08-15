@@ -7,6 +7,7 @@ export const dashboardController = {
 
     try {
       const summary = await dashboardService.getSummary(userId);
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json(summary);
     } catch (err) {
       console.error(err);

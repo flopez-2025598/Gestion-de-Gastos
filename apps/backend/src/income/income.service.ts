@@ -34,7 +34,13 @@ function toIncomeOutput(income: {
 export const incomeService = {
   async listSources(userId: number): Promise<IncomeSourceOutput[]> {
     const sources = await incomeRepository.findSourcesForUser(userId);
-    return sources.map((s) => ({ id: s.id, name: s.name, userId: s.userId }));
+    const seen = new Set<string>();
+    return sources.filter((source) => {
+      const key = source.name.trim().toLocaleLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map((s) => ({ id: s.id, name: s.name, userId: s.userId }));
   },
 
   async createSource(userId: number, input: CreateIncomeSourceInput): Promise<IncomeSourceOutput> {
