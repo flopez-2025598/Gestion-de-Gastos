@@ -1,8 +1,11 @@
 import { taxesRepository } from './taxes.repository.js';
+import { getTaxStrategy } from './strategies/strategy-registry.js';
 import type {
   TaxSettingOutput,
   TaxParameterOutput,
   CreateTaxParameterInput,
+  CalculateTaxInput,
+  CalculateTaxOutput,
 } from './taxes.types.js';
 
 function toParameterOutput(param: {
@@ -33,6 +36,34 @@ export const taxesService = {
       id: setting.id,
       name: setting.name,
       rate: (setting.rate as { toString(): string }).toString(),
+    };
+  },
+
+  async calculate(userId: number, input: CalculateTaxInput): Promise<CalculateTaxOutput> {
+    let rate: string;
+
+    if (input.taxType === 'IVA') {
+      const iva = await taxesRepository.findIvaSetting();
+      if (!iva) {
+        throw new Error('IVA_NOT_CONFIGURED');
+      }
+      rate = (iva.rate as { toString(): string }).toString();
+    } else {
+      const current = await taxesRepository.findCurrentParameter(userId, input.taxType);
+      if (!current) {
+        throw new Error('TAX_PARAMETER_NOT_CONFIGURED');
+      }
+      rate = (current.rate as { toString(): string }).toString();
+    }
+
+    const strategy = getTaxStrategy(input.taxType);
+    const amount = strategy.calculate(input.baseAmount, rate);
+
+    return {
+      taxType: input.taxType,
+      baseAmount: input.baseAmount,
+      rate,
+      amount,
     };
   },
 
@@ -68,6 +99,7 @@ export const taxesService = {
       rate: input.rate,
       validFrom,
     });
+    
 
     return toParameterOutput(created);
   },

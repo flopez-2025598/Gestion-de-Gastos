@@ -10,3 +10,4 @@ taxesRoutes.get('/iva', taxesController.getIva);
 taxesRoutes.get('/parameters', taxesController.listParameters);
 taxesRoutes.get('/parameters/current', taxesController.getCurrentParameters);
 taxesRoutes.post('/parameters', taxesController.createParameter);
+taxesRoutes.post('/calculate', taxesController.calculate);

@@ -20,3 +20,15 @@ export interface CreateTaxParameterInput {
   rate: string;
   validFrom: string;
 }
+
+export interface CalculateTaxInput {
+  taxType: TaxType | 'IVA';
+  baseAmount: string;
+}
+
+export interface CalculateTaxOutput {
+  taxType: string;
+  baseAmount: string;
+  rate: string;
+  amount: string;
+}
