@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+/* Base styling shared by the application. */
+html, body { margin: 0; min-height: 100%; }
+body { background: #dcecff; }
+
+/* Dashboard: blue is the base surface, with white reserved for content. */
+app-dashboard {
+  background: linear-gradient(135deg, #0d4d91 0%, #1974bd 46%, #72b4e7 100%) !important;
+}
+
+app-dashboard .dashboard-shell {
+  background: linear-gradient(135deg, rgba(10, 65, 128, .94), rgba(24, 111, 183, .90) 55%, rgba(81, 163, 218, .84)) !important;
+}
+
+app-dashboard .dashboard-header { border-bottom-color: rgba(255, 255, 255, .26) !important; }
+app-dashboard h1, app-dashboard .welcome, app-dashboard .eyebrow { color: #fff !important; }
+app-dashboard .welcome { color: rgba(255, 255, 255, .82) !important; }
+app-dashboard .eyebrow { color: #cfeaff !important; }
+app-dashboard .dashboard-nav a { border-color: rgba(255, 255, 255, .38) !important; background: linear-gradient(145deg, rgba(255, 255, 255, .96), rgba(226, 243, 255, .92)) !important; color: #12559d !important; }
+app-dashboard .period-info { border-color: rgba(255, 255, 255, .55) !important; background: linear-gradient(115deg, #fff, #eaf6ff) !important; }
+app-dashboard .metric-card { border-color: rgba(255, 255, 255, .6) !important; background: linear-gradient(145deg, #fff, #e8f5ff) !important; box-shadow: 0 12px 26px rgba(3, 42, 85, .18) !important; }
+app-dashboard .metric-card:before { background: linear-gradient(90deg, #0e5eac, #65b5ec) !important; }
