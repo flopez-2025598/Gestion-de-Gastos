@@ -13,6 +13,12 @@ function handleError(err: unknown, res: Response) {
     if (err.message === 'INVALID_DATE_ORDER') {
       return res.status(400).json({ error: 'La fecha no puede ser anterior al registro vigente actual' });
     }
+    if (err.message === 'TAX_PARAMETER_NOT_CONFIGURED') {
+      return res.status(404).json({ error: 'No tienes un parámetro configurado para este impuesto' });
+    }
+    if (err.message === 'UNKNOWN_TAX_TYPE') {
+      return res.status(400).json({ error: 'Tipo de impuesto no reconocido' });
+    }
   }
   console.error(err);
   return res.status(500).json({ error: 'Error interno del servidor' });
@@ -68,6 +74,28 @@ export const taxesController = {
       };
       const param = await taxesService.createParameter(userId, input);
       return res.status(201).json(param);
+    } catch (err) {
+      return handleError(err, res);
+    }
+  },
+  async calculate(req: Request, res: Response) {
+    const userId = req.auth!.userId;
+    const { taxType, baseAmount } = req.body;
+
+    if (!taxType || !baseAmount) {
+      return res.status(400).json({ error: 'Faltan campos requeridos' });
+    }
+
+    if (taxType !== 'ISR' && taxType !== 'IGSS' && taxType !== 'IVA') {
+      return res.status(400).json({ error: 'taxType debe ser ISR, IGSS o IVA' });
+    }
+
+    try {
+      const result = await taxesService.calculate(userId, {
+        taxType,
+        baseAmount: String(baseAmount),
+      });
+      return res.status(200).json(result);
     } catch (err) {
       return handleError(err, res);
     }
