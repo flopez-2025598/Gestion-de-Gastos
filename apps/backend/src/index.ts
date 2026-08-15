@@ -4,6 +4,7 @@ import { authRoutes } from './auth/auth.routes.js';
 import { usersRoutes } from './users/users.routes.js';
 import { incomeRoutes } from './income/income.routes.js';
 import { expensesRoutes } from './expenses/expenses.routes.js';
+import { taxesRoutes } from './taxes/taxes.routes.js';
 
 const app = express();
 const port = 3000;
@@ -18,6 +19,7 @@ app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/income', incomeRoutes);
 app.use('/expenses', expensesRoutes);
+app.use('/taxes', taxesRoutes);
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
