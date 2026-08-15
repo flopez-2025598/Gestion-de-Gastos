@@ -32,7 +32,13 @@ function toExpenseOutput(expense: {
 export const expensesService = {
   async listCategories(userId: number): Promise<ExpenseCategoryOutput[]> {
     const categories = await expensesRepository.findCategoriesForUser(userId);
-    return categories.map((c) => ({ id: c.id, name: c.name, userId: c.userId }));
+    const seen = new Set<string>();
+    return categories.filter((category) => {
+      const key = category.name.trim().toLocaleLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map((c) => ({ id: c.id, name: c.name, userId: c.userId }));
   },
 
   async createCategory(userId: number, input: CreateExpenseCategoryInput): Promise<ExpenseCategoryOutput> {
