@@ -16,6 +16,9 @@ export const authController = {
       if (err instanceof Error && err.message === 'EMAIL_ALREADY_EXISTS') {
         return res.status(409).json({ error: 'El correo ya está registrado' });
       }
+      if (err instanceof Error && err.message === 'WEAK_PASSWORD') {
+        return res.status(400).json({ error: 'La contrasena debe tener al menos 8 caracteres, mayuscula, minuscula y numero, sin espacios' });
+      }
       console.error(err);
       return res.status(500).json({ error: 'Error interno del servidor' });
     }
