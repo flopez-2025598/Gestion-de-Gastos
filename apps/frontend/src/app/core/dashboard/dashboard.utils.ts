@@ -32,10 +32,20 @@ export function formatDateSpanish(isoDate: string): string {
 }
 
 /**
- * Formats a period range with Spanish locale.
- * Input: { from: "...", to: "..." }
- * Output: "01 de agosto de 2026 — 31 de agosto de 2026"
+ * Formats a decimal rate (e.g. from the Taxes API) as a percentage string.
+ * Input: "0.12" (a fraction, as returned by the backend)
+ * Output: "12%"
  */
+export function formatRatePercent(value: string | number): string {
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+  if (isNaN(numValue)) {
+    return '0%';
+  }
+
+  return `${(numValue * 100).toLocaleString('es-GT', { maximumFractionDigits: 2 })}%`;
+}
+
 export function formatPeriod(from: string, to: string): string {
   const fromFormatted = formatDateSpanish(from);
   const toFormatted = formatDateSpanish(to);

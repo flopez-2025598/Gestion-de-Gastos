@@ -5,8 +5,20 @@ import type { RegisterInput, LoginInput, AuthUser } from './auth.types.js';
 
 const SALT_ROUNDS = 10;
 
+function isStrongPassword(password: string): boolean {
+  return password.length >= 8
+    && /[a-z]/.test(password)
+    && /[A-Z]/.test(password)
+    && /\d/.test(password)
+    && !/\s/.test(password);
+}
+
 export const authService = {
   async register(input: RegisterInput): Promise<AuthUser> {
+    if (!isStrongPassword(input.password)) {
+      throw new Error('WEAK_PASSWORD');
+    }
+
     const existing = await authRepository.findByEmail(input.email);
     if (existing) {
       throw new Error('EMAIL_ALREADY_EXISTS');
