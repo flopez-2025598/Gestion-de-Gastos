@@ -1,0 +1,68 @@
+import { prisma } from '../db/prisma.js';
+
+export const expensesRepository = {
+  // Categorías
+  findCategoriesForUser(userId: number) {
+    return prisma.expenseCategory.findMany({
+      where: {
+        OR: [{ userId: null }, { userId }],
+      },
+      orderBy: { name: 'asc' },
+    });
+  },
+
+  findCategoryById(id: number) {
+    return prisma.expenseCategory.findUnique({ where: { id } });
+  },
+
+  createCategory(userId: number, name: string) {
+    return prisma.expenseCategory.create({
+      data: { userId, name },
+    });
+  },
+
+  // Gastos
+  create(userId: number, data: {
+    categoryId: number;
+    amount: string;
+    description?: string;
+    date: Date;
+  }) {
+    return prisma.expense.create({
+      data: { userId, ...data },
+      include: { category: true },
+    });
+  },
+
+  findAllByUser(userId: number) {
+    return prisma.expense.findMany({
+      where: { userId },
+      include: { category: true },
+      orderBy: { date: 'desc' },
+    });
+  },
+
+  findByIdForUser(id: number, userId: number) {
+    return prisma.expense.findFirst({
+      where: { id, userId },
+      include: { category: true },
+    });
+  },
+
+  update(id: number, data: Partial<{
+    categoryId: number;
+    amount: string;
+    description: string;
+    date: Date;
+  }>) {
+    return prisma.expense.update({
+      where: { id },
+      data,
+      include: { category: true },
+    });
+  },
+
+  delete(id: number) {
+    return prisma.expense.delete({ where: { id } });
+  },
+};
