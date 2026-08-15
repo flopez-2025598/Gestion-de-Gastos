@@ -1,5 +1,6 @@
 import { Decimal } from 'decimal.js';
 import { expensesService } from '../expenses/expenses.service.js';
+import { emergencyFundService } from '../emergency-fund/emergency-fund.service.js';
 import { incomeService } from '../income/income.service.js';
 import type {
   ExpensesByCategoryReport,
@@ -116,6 +117,7 @@ export const reportsService = {
 
     const incomes = await incomeService.listForUser(userId);
     const expenses = await expensesService.listForUser(userId);
+    const fundMovements = await emergencyFundService.listMovements(userId);
 
     const incomeTotal = incomes
       .filter((income) => {
@@ -131,7 +133,16 @@ export const reportsService = {
       })
       .reduce((sum, expense) => sum.plus(new Decimal(expense.amount)), new Decimal(0));
 
-    const availableBalance = incomeTotal.minus(expensesTotal);
+    const fundMovementTotal = fundMovements
+      .filter((movement) => {
+        const date = new Date(movement.date);
+        return date >= fromDate && date <= toDate;
+      })
+      .reduce((sum, movement) => movement.type === 'DEPOSIT'
+        ? sum.minus(new Decimal(movement.amount))
+        : sum.plus(new Decimal(movement.amount)), new Decimal(0));
+
+    const availableBalance = incomeTotal.minus(expensesTotal).plus(fundMovementTotal);
 
     return {
       period,

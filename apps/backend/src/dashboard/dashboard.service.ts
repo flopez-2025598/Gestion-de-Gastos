@@ -25,6 +25,7 @@ export const dashboardService = {
     const incomes = await incomeService.listForUser(userId);
     const expenses = await expensesService.listForUser(userId);
     const emergencyFund = await emergencyFundService.getFund(userId);
+    const fundMovements = await emergencyFundService.listMovements(userId);
 
     const monthlyIncome = incomes
       .filter((income) => {
@@ -40,7 +41,16 @@ export const dashboardService = {
       })
       .reduce((sum, expense) => sum.plus(new Decimal(expense.amount)), new Decimal(0));
 
-    const availableBalance = monthlyIncome.minus(monthlyExpenses);
+    const monthlyFundMovement = fundMovements
+      .filter((movement) => {
+        const date = new Date(movement.date);
+        return date >= periodFrom && date <= periodTo;
+      })
+      .reduce((sum, movement) => movement.type === 'DEPOSIT'
+        ? sum.minus(new Decimal(movement.amount))
+        : sum.plus(new Decimal(movement.amount)), new Decimal(0));
+
+    const availableBalance = monthlyIncome.minus(monthlyExpenses).plus(monthlyFundMovement);
 
     return {
       period: {
