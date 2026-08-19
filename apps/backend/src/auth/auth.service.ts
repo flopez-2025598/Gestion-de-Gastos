@@ -52,14 +52,24 @@ export const authService = {
     }
 
     const secret = process.env.JWT_SECRET;
+
     if (!secret) {
       throw new Error('JWT_SECRET no está definida. Revisa tu archivo .env');
     }
 
+    const expiresIn = process.env.JWT_EXPIRES_IN;
+
+    if (!expiresIn) {
+      throw new Error('JWT_EXPIRES_IN no está definida. Revisa tu archivo .env');
+    }
+
+    const tokenExpiresIn = expiresIn as NonNullable<jwt.SignOptions['expiresIn']>;
     const token = jwt.sign(
       { userId: user.id, role: user.role },
       secret,
-      { expiresIn: '2h' }
+      {
+        expiresIn: tokenExpiresIn,
+      },
     );
 
     return {
